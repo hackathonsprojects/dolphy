@@ -1,5 +1,6 @@
 // import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:dolphy/presentation/common_widgets/colors.dart';
+import 'package:dolphy/presentation/pages/login/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dolphy/presentation/pages/profil/page/profile_page.dart';
@@ -9,6 +10,7 @@ import 'package:dolphy/presentation/pages/profil/widget/appbar_widget.dart';
 import 'package:dolphy/presentation/pages/profil/widget/button_widget.dart';
 import 'package:dolphy/presentation/pages/profil/widget/numbers_widget.dart';
 import 'package:dolphy/presentation/pages/profil/widget/profile_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../models/user.dart';
 
@@ -64,8 +66,25 @@ class _ProfilePageState extends State<ProfilePage> {
       );
 
   Widget buildUpgradeButton() => ButtonWidget(
-        text: 'hehehe',
-        onClicked: () {},
+        text: 'deconnexion',
+        onClicked: () async {
+                              SharedPreferences localStorage =
+                                  await SharedPreferences.getInstance();
+                              localStorage.remove("user");
+                              localStorage.remove("token");
+                              localStorage.remove("numero");
+                              Future.delayed(const Duration(milliseconds: 500),
+                                  () {
+// Here you can write your code
+
+                                setState(() {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) => HomeLoginPage()),
+                                      );
+                                });
+                              });
+                            },
       );
 
   Widget buildAbout(User user) => Container(

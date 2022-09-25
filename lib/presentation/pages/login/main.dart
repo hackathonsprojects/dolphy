@@ -77,7 +77,8 @@ class _Login extends State<HomeLoginPage> {
                         height: 50,
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            print('login');
+                            // print('login');
+                            _formKey.currentState!.save();
                             login();
                             // Navigator.push(context, MaterialPageRoute(builder: (context) => SignupPage()));
                           }
@@ -123,6 +124,7 @@ class _Login extends State<HomeLoginPage> {
         TextFormField(
           // controller: ctr,
           onSaved: (value) {
+            // print("hh" + value! + "jj");
             _number = value!;
           },
           maxLength: 10,
@@ -152,50 +154,50 @@ class _Login extends State<HomeLoginPage> {
   }
 
   Future<void> login() async {
-  Navigator.of(context).pushReplacement(
-  MaterialPageRoute(builder: (context) => SignupPage()),
-);
+    // Navigator.of(context).push(
+    //   MaterialPageRoute(builder: (context) => SignupPage()),
+    // );
     ProgressDialog progressDialog = ProgressDialog(
       context,
       title: const Text('Dolphy login'),
       message: const Text('traitement ...'),
     );
-
     progressDialog.show();
 
     var data = {
       'numero': _number,
     };
-    var res = await HttpService.authData(data, 'login');
+    var res = await HttpService.authData(_number, 'auth/login');
+    // var res = true;
     // print(res.toString());
     if (res == false) {
       Fluttertoast.showToast(msg: "une erreur est survenu, merci de ressayer");
-   SharedPreferences localStorage = await SharedPreferences.getInstance();
-        localStorage.setString('token', "hhhh");
-        // localStorage.setString('user', json.encode(body['user']));
-        localStorage.setString('email', "test@test");
-        progressDialog.dismiss();
-Timer(
-        Duration(seconds: 1),
-        () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignupPage())));
-  
-  
-        // Navigator.of(context).pushReplacement(
-        //     MaterialPageRoute(builder: (context) => HomePage()));
-   
-    } else {
-      var body = json.decode(res.body);
-      print(body.toString());
 
-      if (body['success']) {
+      progressDialog.dismiss();
+// Timer(
+//         Duration(seconds: 1),
+//         () => Navigator.pushReplacement(
+//             context, MaterialPageRoute(builder: (context) => SignupPage())));
+
+      // Navigator.of(context).pushReplacement(
+      //     MaterialPageRoute(builder: (context) => HomePage()));
+
+    } else {
+
+      var body = json.decode(res.body!);
+      progressDialog.dismiss();
+      // print(body.toString());
+      if (body['status'] == true) {
+        print(body['user']['nom']);
         SharedPreferences localStorage = await SharedPreferences.getInstance();
         localStorage.setString('token', json.encode(body['token']));
         localStorage.setString('user', json.encode(body['user']));
-        localStorage.setString('email', json.encode(body['user']['email']));
-        progressDialog.dismiss();
+        localStorage.setString('numero', json.encode(body['user']['numero']));
+        Fluttertoast.showToast(msg: body['message']);
 
-        Navigator.of(context).pushReplacement(
+        // progressDialog.dismiss();
+
+        Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => HomePage()));
       } else {
         Fluttertoast.showToast(msg: body['message']);

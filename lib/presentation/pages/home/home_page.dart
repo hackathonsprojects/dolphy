@@ -22,7 +22,7 @@ class HomePage extends StatefulWidget {
 class _Accueil extends State<HomePage> {
   // const _Accueil({Key? key}) : super(key: key);
   int _currentIndex = 0;
-   bool isAuth = false;
+  bool isAuth = false;
   final _key1 = GlobalKey();
   final _key2 = GlobalKey();
   final _key3 = GlobalKey();
@@ -36,13 +36,13 @@ class _Accueil extends State<HomePage> {
   @override
   initState() {
     super.initState();
-
+    _checkIfLoggedIn();
     ambiguate(WidgetsBinding.instance)?.addPostFrameCallback(
       (_) => ShowCaseWidget.of(myContext!).startShowCase([_key1, _key2]),
     );
   }
 
- void _checkIfLoggedIn() async {
+  void _checkIfLoggedIn() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var token = localStorage.getString('token');
     if (token != null) {
@@ -51,50 +51,47 @@ class _Accueil extends State<HomePage> {
       });
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
+    return !isAuth
+        ? HomeLoginPage()
+        : ShowCaseWidget(builder: Builder(builder: (context) {
+            myContext = context;
+            return Scaffold(
+              backgroundColor: appBackgroundColor,
+              appBar: HomePageAppBar(),
+              body:
+                  // HomeLoginPage(),
+                  _currentIndex == 0 ? const HomePageBody() : ProfilePage(),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
+              floatingActionButton: Showcase(
+                key: _key1,
+                // blurValue: 0.0,
+                description: "Ici vous pourrez scanner d'autres code qr",
 
-
-    return 
-    ! isAuth
-     ? HomeLoginPage():
-    ShowCaseWidget(builder: Builder(builder: (context) {
-      myContext = context;
-      return Scaffold(
-        backgroundColor: appBackgroundColor,
-        appBar: HomePageAppBar(),
-        body: 
-        // HomeLoginPage(),
-        _currentIndex == 0 ? const HomePageBody() :  ProfilePage(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Showcase(
-          key: _key1,
-          // blurValue: 0.0,
-          description: "Ici vous pourrez scanner d'autres code qr",
-
-          child: const CustomFloatActionButton(),
-        ),
-        bottomNavigationBar: AnimatedBottomNavigationBar(
-            inactiveColor: greyColor,
-            activeColor: appBarIconButtonColor,
-            iconSize: 25,
-            elevation: 75,
-            notchMargin: 15,
-            icons: const [
-              Icons.home,
-              CupertinoIcons.person,
-            ],
-            activeIndex: _currentIndex,
-            gapLocation: GapLocation.center,
-            notchSmoothness: NotchSmoothness.softEdge,
-            leftCornerRadius: 32,
-            rightCornerRadius: 32,
-            onTap: onTabTapped
-            //other params
-            ),
-      );
-    }));
-
+                child: const CustomFloatActionButton(),
+              ),
+              bottomNavigationBar: AnimatedBottomNavigationBar(
+                  inactiveColor: greyColor,
+                  activeColor: appBarIconButtonColor,
+                  iconSize: 25,
+                  elevation: 75,
+                  notchMargin: 15,
+                  icons: const [
+                    Icons.home,
+                    CupertinoIcons.person,
+                  ],
+                  activeIndex: _currentIndex,
+                  gapLocation: GapLocation.center,
+                  notchSmoothness: NotchSmoothness.softEdge,
+                  leftCornerRadius: 32,
+                  rightCornerRadius: 32,
+                  onTap: onTabTapped
+                  //other params
+                  ),
+            );
+          }));
   }
 }

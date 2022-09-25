@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:ffi';
+
 
 import 'package:dolphy/utils/constant.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -16,10 +16,19 @@ class HttpService {
   }
 
   static authData(data, apiUrl) async {
+    print("kkk" + data);
     try {
       var fullUrl = Uri.parse(API_URL_BASE + apiUrl);
-      return await http.post(fullUrl,
-          body: jsonEncode(data), headers: _setHeaders());
+      return await http.post(
+        fullUrl,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        encoding: Encoding.getByName('utf-8'),
+        body: {"numero": data},
+      );
+      // return await http.post(fullUrl,
+      //     body: jsonEncode(data), headers: _setHeaders());
     } catch (error, stacktrace) {
       print("Exception trouvée: $error stackTrace: $stacktrace");
       return false;
@@ -39,8 +48,8 @@ class HttpService {
   }
 
   static _setHeaders() => {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
+        'Content-type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/x-www-form-urlencoded',
         'Authorization': 'Bearer $token'
       };
 
@@ -61,4 +70,3 @@ class HttpService {
   //   }
   // }
 }
-
