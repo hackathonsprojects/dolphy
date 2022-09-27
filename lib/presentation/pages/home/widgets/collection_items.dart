@@ -28,7 +28,7 @@ class CollectionItems extends StatelessWidget {
           margin: const EdgeInsets.only(top: 35),
           width: MediaQuery.of(context).size.width / 1.2,
           height: 250,
-          color: Colors.grey[200],
+          // color: Colors.grey[200],
           child: new Image.asset('assets/qr.png'),
           alignment: Alignment.center,
         ));
